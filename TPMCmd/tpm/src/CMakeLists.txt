@@ -1,0 +1,6 @@
+add_subdirectory(command)
+add_subdirectory(crypt)
+add_subdirectory(events)
+add_subdirectory(main)
+add_subdirectory(subsystem)
+add_subdirectory(support)

@@ -1,0 +1,11 @@
+target_sources(tpm PUBLIC
+  "${CMAKE_CURRENT_LIST_DIR}/CommandAudit.c"
+  "${CMAKE_CURRENT_LIST_DIR}/DA.c"
+  "${CMAKE_CURRENT_LIST_DIR}/Hierarchy.c"
+  "${CMAKE_CURRENT_LIST_DIR}/NvDynamic.c"
+  "${CMAKE_CURRENT_LIST_DIR}/NvReserved.c"
+  "${CMAKE_CURRENT_LIST_DIR}/Object.c"
+  "${CMAKE_CURRENT_LIST_DIR}/PCR.c"
+  "${CMAKE_CURRENT_LIST_DIR}/PP.c"
+  "${CMAKE_CURRENT_LIST_DIR}/Session.c"
+  "${CMAKE_CURRENT_LIST_DIR}/Time.c")

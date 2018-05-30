@@ -1,0 +1,16 @@
+target_sources(tpm PUBLIC
+  "${CMAKE_CURRENT_LIST_DIR}/NV_Certify.c"
+  "${CMAKE_CURRENT_LIST_DIR}/NV_ChangeAuth.c"
+  "${CMAKE_CURRENT_LIST_DIR}/NV_DefineSpace.c"
+  "${CMAKE_CURRENT_LIST_DIR}/NV_Extend.c"
+  "${CMAKE_CURRENT_LIST_DIR}/NV_GlobalWriteLock.c"
+  "${CMAKE_CURRENT_LIST_DIR}/NV_Increment.c"
+  "${CMAKE_CURRENT_LIST_DIR}/NV_Read.c"
+  "${CMAKE_CURRENT_LIST_DIR}/NV_ReadLock.c"
+  "${CMAKE_CURRENT_LIST_DIR}/NV_ReadPublic.c"
+  "${CMAKE_CURRENT_LIST_DIR}/NV_SetBits.c"
+  "${CMAKE_CURRENT_LIST_DIR}/NV_spt.c"
+  "${CMAKE_CURRENT_LIST_DIR}/NV_UndefineSpace.c"
+  "${CMAKE_CURRENT_LIST_DIR}/NV_UndefineSpaceSpecial.c"
+  "${CMAKE_CURRENT_LIST_DIR}/NV_Write.c"
+  "${CMAKE_CURRENT_LIST_DIR}/NV_WriteLock.c")

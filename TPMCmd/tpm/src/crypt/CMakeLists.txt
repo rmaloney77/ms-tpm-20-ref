@@ -1,0 +1,25 @@
+#TODO: Conditionally add math library; for now hardcode OpenSSL
+add_subdirectory(ossl)
+target_sources(tpm PUBLIC
+  "${CMAKE_CURRENT_LIST_DIR}/AlgorithmTests.c"
+  "${CMAKE_CURRENT_LIST_DIR}/BnConvert.c"
+  "${CMAKE_CURRENT_LIST_DIR}/BnMath.c"
+  "${CMAKE_CURRENT_LIST_DIR}/BnMemory.c"
+  "${CMAKE_CURRENT_LIST_DIR}/CryptCmac.c"
+  "${CMAKE_CURRENT_LIST_DIR}/CryptDes.c"
+  "${CMAKE_CURRENT_LIST_DIR}/CryptEccData.c"
+  "${CMAKE_CURRENT_LIST_DIR}/CryptEccKeyExchange.c"
+  "${CMAKE_CURRENT_LIST_DIR}/CryptEccMain.c"
+  "${CMAKE_CURRENT_LIST_DIR}/CryptEccSignature.c"
+  "${CMAKE_CURRENT_LIST_DIR}/CryptHash.c"
+  "${CMAKE_CURRENT_LIST_DIR}/CryptHashData.c"
+  "${CMAKE_CURRENT_LIST_DIR}/CryptPrime.c"
+  "${CMAKE_CURRENT_LIST_DIR}/CryptPrimeSieve.c"
+  "${CMAKE_CURRENT_LIST_DIR}/CryptRand.c"
+  "${CMAKE_CURRENT_LIST_DIR}/CryptRsa.c"
+  "${CMAKE_CURRENT_LIST_DIR}/CryptSelfTest.c"
+  "${CMAKE_CURRENT_LIST_DIR}/CryptSmac.c"
+  "${CMAKE_CURRENT_LIST_DIR}/CryptUtil.c"
+  "${CMAKE_CURRENT_LIST_DIR}/PrimeData.c"
+  "${CMAKE_CURRENT_LIST_DIR}/RsaKeyCache.c"
+  "${CMAKE_CURRENT_LIST_DIR}/Ticket.c")

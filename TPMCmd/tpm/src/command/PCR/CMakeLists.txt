@@ -1,0 +1,8 @@
+target_sources(tpm PUBLIC
+  "${CMAKE_CURRENT_LIST_DIR}/PCR_Allocate.c"
+  "${CMAKE_CURRENT_LIST_DIR}/PCR_Event.c"
+  "${CMAKE_CURRENT_LIST_DIR}/PCR_Extend.c"
+  "${CMAKE_CURRENT_LIST_DIR}/PCR_Read.c"
+  "${CMAKE_CURRENT_LIST_DIR}/PCR_Reset.c"
+  "${CMAKE_CURRENT_LIST_DIR}/PCR_SetAuthPolicy.c"
+  "${CMAKE_CURRENT_LIST_DIR}/PCR_SetAuthValue.c")
