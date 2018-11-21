@@ -35,15 +35,16 @@
 #include "Tpm.h"
 #include "HierarchyChangeAuth_fp.h"
 
-#ifdef TPM_CC_HierarchyChangeAuth  // Conditional expansion of this file
+#if CC_HierarchyChangeAuth  // Conditional expansion of this file
 
 #include "Object_spt_fp.h"
 
 /*(See part 3 specification)
 // Set a hierarchy authValue
 */
-// return type: TPM_RC
-//   TPM_RC_SIZE        'newAuth' size is greater than that of integrity hash digest
+//  Return Type: TPM_RC
+//      TPM_RC_SIZE        'newAuth' size is greater than that of integrity hash 
+//                          digest
 TPM_RC
 TPM2_HierarchyChangeAuth(
     HierarchyChangeAuth_In  *in             // IN: input parameter list

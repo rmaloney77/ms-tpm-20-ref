@@ -34,7 +34,7 @@
  */
 /*(Auto-generated)
  *  Created by TpmPrototypes; Version 3.0 July 18, 2017
- *  Date: Aug 12, 2017  Time: 03:40:11PM
+ *  Date: Aug  8, 2018  Time: 12:23:01AM
  */
 
 #ifndef    _COMMANDCODEATTRIBUTES_FP_H_
@@ -43,6 +43,9 @@
 //*** GetClosestCommandIndex()
 // This function returns the command index for the command with a value that is
 // equal to or greater than the input value
+//  Return Type: COMMAND_INDEX
+//  UNIMPLEMENTED_COMMAND_INDEX     command is not implemented
+//  other                           index of a command
 COMMAND_INDEX
 GetClosestCommandIndex(
     TPM_CC           commandCode    // IN: the command code to start at
@@ -51,8 +54,8 @@ GetClosestCommandIndex(
 //*** CommandCodeToComandIndex()
 // This function returns the index in the various attributes arrays of the
 // command.
-// return type: COMMAND_INDEX
-//  UNIMPLEMNED_COMMAND_INDEX       command is not implemented
+//  Return Type: COMMAND_INDEX
+//  UNIMPLEMENTED_COMMAND_INDEX     command is not implemented
 //  other                           index of the command
 COMMAND_INDEX
 CommandCodeToCommandIndex(
@@ -61,7 +64,7 @@ CommandCodeToCommandIndex(
 
 //*** GetNextCommandIndex()
 // This function returns the index of the next implemented command.
-// return type: COMMAND_INDEX
+//  Return Type: COMMAND_INDEX
 //  UNIMPLEMENTED_COMMAND_INDEX     no more implemented commands
 //  other                           the index of the next implemented command
 COMMAND_INDEX
@@ -80,7 +83,7 @@ GetCommandCode(
 //
 //  This function returns the authorization role required of a handle.
 //
-// return type:     AUTH_ROLE
+//  Return Type: AUTH_ROLE
 //  AUTH_NONE       no authorization is required
 //  AUTH_USER       user role authorization is required
 //  AUTH_ADMIN      admin role authorization is required
@@ -94,48 +97,26 @@ CommandAuthRole(
 //*** EncryptSize()
 // This function returns the size of the decrypt size field. This function returns
 // 0 if encryption is not allowed
-// return type: int
+//  Return Type: int
 //  0       encryption not allowed
 //  2       size field is two bytes
 //  4       size field is four bytes
-#ifndef INLINE_FUNCTIONS
 int
 EncryptSize(
     COMMAND_INDEX    commandIndex   // IN: command index
     );
-#else
-INLINE int
-EncryptSize(
-    COMMAND_INDEX    commandIndex   // IN: command index
-    )
-{
-    return ((s_commandAttributes[commandIndex] & ENCRYPT_2) ? 2 :
-            (s_commandAttributes[commandIndex] & ENCRYPT_4) ? 4 : 0);
-}
-#endif // INLINE_FUNCTIONS
 
 //*** DecryptSize()
 // This function returns the size of the decrypt size field. This function returns
 // 0 if decryption is not allowed
-// return type: int
+//  Return Type: int
 //  0       encryption not allowed
 //  2       size field is two bytes
 //  4       size field is four bytes
-#ifndef INLINE_FUNCTIONS
 int
 DecryptSize(
     COMMAND_INDEX    commandIndex   // IN: command index
     );
-#else
-INLINE int
-DecryptSize(
-    COMMAND_INDEX    commandIndex   // IN: command index
-    )
-{
-    return ((s_commandAttributes[commandIndex] & DECRYPT_2) ? 2 :
-            (s_commandAttributes[commandIndex] & DECRYPT_4) ? 4 : 0);
-}
-#endif // INLINE_FUNCTIONS
 
 //*** IsSessionAllowed()
 //
@@ -143,40 +124,20 @@ DecryptSize(
 //
 // This function must not be called if the command is not known to be implemented.
 //
-//  return type:        BOOL
-//  TRUE                session is allowed with this command
-//  FALSE               session is not allowed with this command
-#ifndef INLINE_FUNCTIONS
+//  Return Type: BOOL
+//      TRUE(1)         session is allowed with this command
+//      FALSE(0)        session is not allowed with this command
 BOOL
 IsSessionAllowed(
     COMMAND_INDEX    commandIndex   // IN: the command to be checked
     );
-#else
-INLINE BOOL
-IsSessionAllowed(
-    COMMAND_INDEX    commandIndex   // IN: the command to be checked
-    )
-{
-    return ((s_commandAttributes[commandIndex] & NO_SESSIONS) == 0);
-}
-#endif // INLINE_FUNCTIONS
 
 //*** IsHandleInResponse()
 // This function determines if a command has a handle in the response
-#ifndef INLINE_FUNCTIONS
 BOOL
 IsHandleInResponse(
     COMMAND_INDEX    commandIndex
     );
-#else
-INLINE BOOL
-IsHandleInResponse(
-    COMMAND_INDEX    commandIndex
-    )
-{
-    return ((s_commandAttributes[commandIndex] & R_HANDLE) != 0);
-}
-#endif // INLINE_FUNCTIONS
 
 //*** IsWriteOperation()
 // Checks to see if an operation will write to an NV Index and is subject to being
@@ -197,7 +158,7 @@ IsReadOperation(
 //*** CommandCapGetCCList()
 // This function returns a list of implemented commands and command attributes
 // starting from the command in 'commandCode'.
-// return type: TPMI_YES_NO
+//  Return Type: TPMI_YES_NO
 //      YES         more command attributes are available
 //      NO          no more command attributes are available
 TPMI_YES_NO
@@ -210,22 +171,12 @@ CommandCapGetCCList(
 
 //*** IsVendorCommand()
 // Function indicates if a command index references a vendor command.
-// return type: BOOL
-//  TRUE        command is a vendor command
-//  FALSE       command is not a vendor command
-#ifndef INLINE_FUNCTIONS
+//  Return Type: BOOL
+//      TRUE(1)         command is a vendor command
+//      FALSE(0)        command is not a vendor command
 BOOL
 IsVendorCommand(
     COMMAND_INDEX    commandIndex   // IN: command index to check
     );
-#else
-INLINE BOOL
-IsVendorCommand(
-    COMMAND_INDEX    commandIndex   // IN: command index to check
-    )
-{
-    return (IS_ATTRIBUTE(s_ccAttr[commandIndex], TPMA_CC, V));
-}
-#endif // INLINE_FUNCTIONS
 
 #endif  // _COMMANDCODEATTRIBUTES_FP_H_

@@ -35,12 +35,12 @@
 #include "Tpm.h"
 #include "PolicyTemplate_fp.h"
 
-#ifdef TPM_CC_PolicyTemplate  // Conditional expansion of this file
+#if CC_PolicyTemplate  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // Add a cpHash restriction to the policyDigest
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_CPHASH           cpHash of 'policySession' has previously been set
 //                              to a different value
 //      TPM_RC_SIZE             'templateHash' is not the size of a digest produced
@@ -71,7 +71,7 @@ TPM2_PolicyTemplate(
         return TPM_RC_CPHASH;
 
     // A valid templateHash must have the same size as session hash digest
-    if(in->templateHash.t.size != CryptHashGetDigestSize(session->authHashAlg))              
+    if(in->templateHash.t.size != CryptHashGetDigestSize(session->authHashAlg))
         return TPM_RCS_SIZE + RC_PolicyTemplate_templateHash;
 
 // Internal Data Update

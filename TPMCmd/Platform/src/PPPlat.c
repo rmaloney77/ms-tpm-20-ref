@@ -34,7 +34,7 @@
  */
 //** Description
 
-//    This module simulates the physical present interface pins on the TPM.
+//    This module simulates the physical presence interface pins on the TPM.
 
 //** Includes
 #include "PlatformData.h"
@@ -44,9 +44,9 @@
 
 //***_plat__PhysicalPresenceAsserted()
 // Check if physical presence is signaled
-// return type: int
-//      TRUE(1)          if physical presence is signaled
-//      FALSE(0)         if physical presence is not signaled
+//  Return Type: int
+//      TRUE(1)         if physical presence is signaled
+//      FALSE(0)        if physical presence is not signaled
 LIB_EXPORT int
 _plat__PhysicalPresenceAsserted(
     void

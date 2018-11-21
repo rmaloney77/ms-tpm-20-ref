@@ -35,12 +35,12 @@
 #include "Tpm.h"
 #include "NV_ChangeAuth_fp.h"
 
-#ifdef TPM_CC_NV_ChangeAuth  // Conditional expansion of this file
+#if CC_NV_ChangeAuth  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // change authorization value of a NV index
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_SIZE                     'newAuth' size is larger than the digest
 //                                      size of the Name algorithm for the Index
 //                                      referenced by 'nvIndex

@@ -43,17 +43,18 @@
 
 //** Functions
 
-#ifdef TPM_ALG_ECMQV
+#if ALG_ECMQV
 
 //*** avf1()
 // This function does the associated value computation required by MQV key
 // exchange.
 // Process:
-// 1. Convert xQ to an integer xqi using the convention specified in Appendix C.3.
+// 1. Convert 'xQ' to an integer 'xqi' using the convention specified in Appendix C.3.
 // 2. Calculate
 //        xqm = xqi mod 2^ceil(f/2) (where f = ceil(log2(n)).
 // 3. Calculate the associate value function
 //        avf(Q) = xqm + 2ceil(f / 2)
+// Always returns TRUE(1).
 static BOOL
 avf1(
     bigNum               bnX,           // IN/OUT: the reduced value
@@ -76,24 +77,23 @@ avf1(
 // CAUTION: Implementation of this function may require use of essential claims in
 // patents not owned by TCG members.
 //
-// Points QsB and QeB are required to be on the curve of inQsA. The function will
-// fail, possibly catastrophically, if this is not the case.
-// return type: TPM_RC
-//      TPM_RC_SUCCESS           results is valid
-//      TPM_RC_NO_RESULTS       the value for dsA does not give a valid point on the
-//                          curve
+// Points 'QsB' and 'QeB' are required to be on the curve of 'inQsA'. The function 
+// will fail, possibly catastrophically, if this is not the case.
+//  Return Type: TPM_RC
+//      TPM_RC_NO_RESULT        the value for dsA does not give a valid point on the
+//                              curve
 static TPM_RC
 C_2_2_MQV(
-    TPMS_ECC_POINT        *outZ,         // OUT: the computed point
-    TPM_ECC_CURVE          curveId,      // IN: the curve for the computations
-    TPM2B_ECC_PARAMETER   *dsA,          // IN: static private TPM key
-    TPM2B_ECC_PARAMETER   *deA,          // IN: ephemeral private TPM key
-    TPMS_ECC_POINT        *QsB,          // IN: static public party B key
-    TPMS_ECC_POINT        *QeB           // IN: ephemeral public party B key
+    TPMS_ECC_POINT          *outZ,         // OUT: the computed point
+    TPM_ECC_CURVE            curveId,      // IN: the curve for the computations
+    TPM2B_ECC_PARAMETER     *dsA,          // IN: static private TPM key
+    TPM2B_ECC_PARAMETER     *deA,          // IN: ephemeral private TPM key
+    TPMS_ECC_POINT          *QsB,          // IN: static public party B key
+    TPMS_ECC_POINT          *QeB           // IN: ephemeral public party B key
     )
 {
     CURVE_INITIALIZED(E, curveId);
-    ECC_CURVE_DATA          *C;
+    const ECC_CURVE_DATA    *C;
     POINT(pQeA);
     POINT_INITIALIZED(pQeB, QeB);
     POINT_INITIALIZED(pQsB, QsB);
@@ -109,7 +109,7 @@ C_2_2_MQV(
         ERROR_RETURN(TPM_RC_VALUE);
     pAssert(outZ != NULL && pQeB != NULL && pQsB != NULL && deA != NULL 
             && dsA != NULL);
-    *C = AccessCurveData(E);
+    C = AccessCurveData(E);
 // Process:
 //  1. implicitsigA = (de,A + avf(Qe,A)ds,A ) mod n.
 //  2. P = h(implicitsigA)(Qe,B + avf(Qe,B)Qs,B).
@@ -163,7 +163,7 @@ Exit:
     return retVal;
 }
 
-#endif // TPM_ALG_ECMQV
+#endif // ALG_ECMQV
 
 //*** C_2_2_ECDH()
 // This function performs the two phase key exchange defined in SP800-56A,
@@ -213,8 +213,8 @@ Exit:
 //*** CryptEcc2PhaseKeyExchange()
 // This function is the dispatch routine for the EC key exchange functions that use
 // two ephemeral and two static keys.
-// return type: TPM_RC
-//  TPM_RC_SCHEME             scheme is not defined
+//  Return Type: TPM_RC
+//      TPM_RC_SCHEME             scheme is not defined
 LIB_EXPORT TPM_RC
 CryptEcc2PhaseKeyExchange(
     TPMS_ECC_POINT          *outZ1,         // OUT: a computed point
@@ -242,16 +242,16 @@ CryptEcc2PhaseKeyExchange(
     }
     switch(scheme)
     {
-        case TPM_ALG_ECDH:
+        case ALG_ECDH_VALUE:
             return C_2_2_ECDH(outZ1, outZ2, curveId, dsA, deA, QsB, QeB);
             break;
-#ifdef  TPM_ALG_ECMQV
-        case TPM_ALG_ECMQV:
+#if     ALG_ECMQV
+        case ALG_ECMQV_VALUE:
             return C_2_2_MQV(outZ1, curveId, dsA, deA, QsB, QeB);
             break;
 #endif
-#ifdef  TPM_ALG_SM2
-        case TPM_ALG_SM2:
+#if     ALG_SM2
+        case ALG_SM2_VALUE:
             return SM2KeyExchange(outZ1, curveId, dsA, deA, QsB, QeB);
             break;
 #endif
@@ -260,7 +260,7 @@ CryptEcc2PhaseKeyExchange(
     }
 }
 
-#ifdef TPM_ALG_SM2
+#if     ALG_SM2
 
 //*** ComputeWForSM2()
 // Compute the value for w used by SM2
@@ -275,11 +275,11 @@ ComputeWForSM2(
 
 //*** avfSm2()
 // This function does the associated value computation required by SM2 key
-// exchange. This is different form the avf() in the international standards
+// exchange. This is different from the avf() in the international standards
 // because it returns a value that is half the size of the value returned by the
-// standard avf. For example, if n is 15, Ws (w in the standard) is 2 but the W
-// here is 1. This means that an input value of 14 (1110b) would return a value
-// of 110b with the standard but 10b with the scheme in SM2.
+// standard avf(). For example, if 'n' is 15, 'Ws' ('w' in the standard) is 2 but 
+// the 'W' here is 1. This means that an input value of 14 (1110b) would return a 
+// value of 110b with the standard but 10b with the scheme in SM2.
 static bigNum
 avfSm2(
     bigNum              bn,           // IN/OUT: the reduced value
@@ -297,19 +297,18 @@ avfSm2(
     return bn;
 }
 
-// SM2KeyExchange()
+//*** SM2KeyExchange()
 // This function performs the key exchange defined in SM2.
 // The first step is to compute
-//  'tA' = ('dsA' + 'deA'  avf(Xe,A)) mod n
-// Then, compute the Z value from
-// 'outZ' = ('h'  'tA' mod 'n') ('QsA' + [avf(QeB.x)](QeB)).
+//  'tA' = ('dsA' + 'deA'  avf(Xe,A)) mod 'n'
+// Then, compute the 'Z' value from
+// 'outZ' = ('h'  'tA' mod 'n') ('QsA' + [avf('QeB.x')]('QeB')).
 // The function will compute the ephemeral public key from the ephemeral
 // private key.
-// All points are required to be on the curve of inQsA. The function will fail
+// All points are required to be on the curve of 'inQsA'. The function will fail
 // catastrophically if this is not the case
-// return type: TPM_RC
-//      TPM_RC_SUCCESS           results is valid
-//      TPM_RC_NO_RESULTS       the value for dsA does not give a valid point on the
+//  Return Type: TPM_RC
+//      TPM_RC_NO_RESULT        the value for dsA does not give a valid point on the
 //                              curve
 LIB_EXPORT TPM_RC
 SM2KeyExchange(

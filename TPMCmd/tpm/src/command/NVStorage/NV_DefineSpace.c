@@ -35,12 +35,12 @@
 #include "Tpm.h"
 #include "NV_DefineSpace_fp.h"
 
-#ifdef TPM_CC_NV_DefineSpace  // Conditional expansion of this file
+#if CC_NV_DefineSpace  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // Define a NV index space
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_HIERARCHY            for authorizations using TPM_RH_PLATFORM
 //                                  phEnable_NV is clear preventing access to NV
 //                                  data in the platform hierarchy.

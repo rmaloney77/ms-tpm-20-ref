@@ -35,12 +35,12 @@
 #include "Tpm.h"
 #include "NV_SetBits_fp.h"
 
-#ifdef TPM_CC_NV_SetBits  // Conditional expansion of this file
+#if CC_NV_SetBits  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // Set bits in a NV index
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_ATTRIBUTES               the TPMA_NV_BITS attribute is not SET in the
 //                                      Index referenced by 'nvIndex'
 //      TPM_RC_NV_AUTHORIZATION         the authorization was valid but the

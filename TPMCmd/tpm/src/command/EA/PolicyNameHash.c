@@ -35,12 +35,12 @@
 #include "Tpm.h"
 #include "PolicyNameHash_fp.h"
 
-#ifdef TPM_CC_PolicyNameHash  // Conditional expansion of this file
+#if CC_PolicyNameHash  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // Add a nameHash restriction to the policyDigest
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_CPHASH     'nameHash' has been previously set to a different value
 //      TPM_RC_SIZE       'nameHash' is not the size of the digest produced by the
 //                        hash algorithm associated with 'policySession'

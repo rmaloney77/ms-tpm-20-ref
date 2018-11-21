@@ -35,12 +35,12 @@
 #include "Tpm.h"
 #include "Shutdown_fp.h"
 
-#ifdef TPM_CC_Shutdown  // Conditional expansion of this file
+#if CC_Shutdown  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // Shut down TPM for power off
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_TYPE             if PCR bank has been re-configured, a
 //                              CLEAR StateSave is required
 TPM_RC

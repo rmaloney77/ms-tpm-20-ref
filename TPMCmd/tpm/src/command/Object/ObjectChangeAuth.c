@@ -35,14 +35,14 @@
 #include "Tpm.h"
 #include "ObjectChangeAuth_fp.h"
 
-#ifdef TPM_CC_ObjectChangeAuth  // Conditional expansion of this file
+#if CC_ObjectChangeAuth  // Conditional expansion of this file
 
 #include "Object_spt_fp.h"
 
 /*(See part 3 specification)
 // Create an object
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_SIZE             'newAuth' is larger than the size of the digest
 //                              of the Name algorithm of 'objectHandle'
 //      TPM_RC_TYPE             the key referenced by 'parentHandle' is not the

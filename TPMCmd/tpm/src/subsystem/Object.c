@@ -113,10 +113,10 @@ ObjectCleanupEvict(
 // object.  This routine should not be called if the handle is not a
 // transient handle. The function validates that the handle is in the
 // implementation-dependent allowed in range for loaded transient objects.
-// return type: BOOL
-//      TRUE        if the handle references a loaded object
-//      FALSE       if the handle is not an object handle, or it does not
-//                  reference to a loaded object
+//  Return Type: BOOL
+//      TRUE(1)         handle references a loaded object
+//      FALSE(0)        handle is not an object handle, or it does not
+//                      reference to a loaded object
 BOOL
 IsObjectPresent(
     TPMI_DH_OBJECT   handle         // IN: handle to be checked
@@ -136,9 +136,9 @@ IsObjectPresent(
 //*** ObjectIsSequence()
 // This function is used to check if the object is a sequence object. This function
 // should not be called if the handle does not reference a loaded object.
-// return type: BOOL
-//      TRUE        object is an HMAC, hash, or event sequence object
-//      FALSE       object is not an HMAC, hash, or event sequence object
+//  Return Type: BOOL
+//      TRUE(1)         object is an HMAC, hash, or event sequence object
+//      FALSE(0)        object is not an HMAC, hash, or event sequence object
 BOOL
 ObjectIsSequence(
     OBJECT          *object         // IN: handle to be checked
@@ -267,9 +267,9 @@ GetHeriarchy(
 // This function finds an open object slot, if any. It will clear the attributes
 // but will not set the occupied attribute. This is so that a slot may be used
 // and discarded if everything does not go as planned.
-// return type: OBJECT *
-//  null            no open slot found
-// !=null           pointer to available slot
+//  Return Type: OBJECT *
+//      NULL        no open slot found
+//      != NULL     pointer to available slot
 OBJECT *
 FindEmptyObjectSlot(
     TPMI_DH_OBJECT  *handle         // OUT: (optional)
@@ -412,7 +412,7 @@ ObjectLoad(
     )
 {
     TPM_RC           result = TPM_RC_SUCCESS;
-    BOOL             doCheck;
+    BOOL             doCheck = FALSE;
 //
     // Do validations of public area object descriptions
 
@@ -435,8 +435,10 @@ ObjectLoad(
     }
     if(result != TPM_RC_SUCCESS)
         return RcSafeAddToResult(result, blamePublic);
-    // If object == NULL, then this is am import. For import, load is not called
-    // unless the parent is fixedTPM. 
+    // If object == NULL, then this is an import and a full object structure is not
+    // created. When doing TPM2_Import(), ObjectLoad() is only called if the parent
+    // is 'fixedTPM.' We want to do the check because, during the check, everything
+    // is created.
     if(object == NULL)
         doCheck = TRUE;// //
     // If the parent is not NULL, then this is an ordinary load and we only check
@@ -477,8 +479,8 @@ ObjectLoad(
     else
     {
         object->sensitive = *sensitive;
-#ifdef TPM_ALG_RSA
-        // If this is an RSA key that is not a parent, complete the load by 
+#if     ALG_RSA
+        // If this is an RSA key, complete the load by 
         // computing the private exponent.
         if(publicArea->type == ALG_RSA_VALUE)
             result = CryptRsaLoadPrivateExponent(object);
@@ -535,10 +537,10 @@ AllocateSequenceSlot(
 }
 
 
-#if defined TPM_CC_HMAC_Start || defined TPM_CC_MAC_Start
+#if CC_HMAC_Start || CC_MAC_Start
 //*** ObjectCreateHMACSequence()
 // This function creates an internal HMAC sequence object.
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_OBJECT_MEMORY        if there is no free slot for an object
 TPM_RC
 ObjectCreateHMACSequence(
@@ -574,7 +576,7 @@ ObjectCreateHMACSequence(
 
 //*** ObjectCreateHashSequence()
 // This function creates a hash sequence object.
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_OBJECT_MEMORY        if there is no free slot for an object
 TPM_RC
 ObjectCreateHashSequence(
@@ -599,7 +601,7 @@ ObjectCreateHashSequence(
 
 //*** ObjectCreateEventSequence()
 // This function creates an event sequence object.
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_OBJECT_MEMORY        if there is no free slot for an object
 TPM_RC
 ObjectCreateEventSequence(
@@ -656,9 +658,9 @@ ObjectTerminateEvent(
 
 //*** ObjectContextLoad()
 // This function loads an object from a saved object context.
-// return type: OBJECT *
+//  Return Type: OBJECT *
 //      NULL        if there is no free slot for an object
-//      NON_NULL    points to the loaded object
+//      != NULL     points to the loaded object
 OBJECT *
 ObjectContextLoad(
     ANY_OBJECT_BUFFER   *object,        // IN: pointer to object structure in saved
@@ -750,10 +752,10 @@ ObjectFlushHierarchy(
 // This function loads a persistent object into a transient object slot.
 //
 // This function requires that 'handle' is associated with a persistent object.
-// return type: TPM_RC
-//  TPM_RC_HANDLE                   the persistent object does not exist
+//  Return Type: TPM_RC
+//      TPM_RC_HANDLE               the persistent object does not exist
 //                                  or the associated hierarchy is disabled.
-//  TPM_RC_OBJECT_MEMORY            no object slot
+//      TPM_RC_OBJECT_MEMORY        no object slot
 TPM_RC
 ObjectLoadEvict(
     TPM_HANDLE      *handle,        // IN:OUT: evict object handle.  If success, it
@@ -894,11 +896,11 @@ ComputeQualifiedName(
 
 //*** ObjectIsStorage()
 // This function determines if an object has the attributes associated
-// with an parent. A parent is an asymmetric or symmetric block cipher key 
+// with a parent. A parent is an asymmetric or symmetric block cipher key 
 // that has its 'restricted' and 'decrypt' attributes SET, and 'sign' CLEAR.
-// return type: BOOL
-//        TRUE          if the object is a storage key
-//        FALSE         if the object is not a storage key
+//  Return Type: BOOL
+//      TRUE(1)         object is a storage key
+//      FALSE(0)        object is not a storage key
 BOOL
 ObjectIsStorage(
     TPMI_DH_OBJECT   handle         // IN: object handle
@@ -919,7 +921,7 @@ ObjectIsStorage(
 // This function returns a a list of handles of loaded object, starting from
 // 'handle'. 'Handle' must be in the range of valid transient object handles,
 // but does not have to be the handle of a loaded transient object.
-// return type: TPMI_YES_NO
+//  Return Type: TPMI_YES_NO
 //      YES         if there are more handles available
 //      NO          all the available handles has been returned
 TPMI_YES_NO

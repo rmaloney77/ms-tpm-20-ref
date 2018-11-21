@@ -35,14 +35,14 @@
 #include "Tpm.h"
 #include "Unseal_fp.h"
 
-#ifdef TPM_CC_Unseal  // Conditional expansion of this file
+#if CC_Unseal  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // return data in a sealed data blob
 */
-// return type: TPM_RC
-//    TPM_RC_ATTRIBUTES           'itemHandle' has wrong attributes
-//    TPM_RC_TYPE                 'itemHandle' is not a KEYEDHASH data object
+//  Return Type: TPM_RC
+//      TPM_RC_ATTRIBUTES         'itemHandle' has wrong attributes
+//      TPM_RC_TYPE               'itemHandle' is not a KEYEDHASH data object
 TPM_RC
 TPM2_Unseal(
     Unseal_In           *in,

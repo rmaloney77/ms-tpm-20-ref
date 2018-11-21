@@ -35,12 +35,12 @@
 #include "Tpm.h"
 #include "SequenceUpdate_fp.h"
 
-#ifdef TPM_CC_SequenceUpdate  // Conditional expansion of this file
+#if CC_SequenceUpdate  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // This function is used to add data to a sequence object.
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_MODE             'sequenceHandle' does not reference a hash or HMAC
 //                              sequence object
 TPM_RC

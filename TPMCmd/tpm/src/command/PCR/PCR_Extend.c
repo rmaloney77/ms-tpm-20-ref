@@ -35,12 +35,12 @@
 #include "Tpm.h"
 #include "PCR_Extend_fp.h"
 
-#ifdef TPM_CC_PCR_Extend  // Conditional expansion of this file
+#if CC_PCR_Extend  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // Update PCR
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_LOCALITY             current command locality is not allowed to
 //                                  extend the PCR referenced by 'pcrHandle'
 TPM_RC

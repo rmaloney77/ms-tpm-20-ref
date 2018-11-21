@@ -37,12 +37,12 @@
 
 #ifdef TPM_CC_EC_Ephemeral  // Conditional expansion of this file
 
-#ifdef TPM_ALG_ECC
+#if     ALG_ECC
 
 /*(See part 3 specification)
 // This command creates an ephemeral key using the commit mechanism
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 // TPM_RC_NO_RESULT             the TPM is not able to generate an 'r' value
 TPM_RC
 TPM2_EC_Ephemeral(

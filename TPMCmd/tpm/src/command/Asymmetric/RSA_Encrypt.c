@@ -37,12 +37,12 @@
 
 #ifdef TPM_CC_RSA_Encrypt  // Conditional expansion of this file
 
-#ifdef TPM_ALG_RSA
+#if     ALG_RSA
 
 /*(See part 3 specification)
 // This command performs the padding and encryption of a data block
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_ATTRIBUTES           'decrypt' attribute is not SET in key referenced
 //                                  by 'keyHandle'
 //      TPM_RC_KEY                  'keyHandle' does not reference an RSA key

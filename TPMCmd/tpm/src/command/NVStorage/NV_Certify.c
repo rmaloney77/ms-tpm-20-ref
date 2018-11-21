@@ -36,12 +36,12 @@
 #include "Attest_spt_fp.h"
 #include "NV_Certify_fp.h"
 
-#ifdef TPM_CC_NV_Certify  // Conditional expansion of this file
+#if CC_NV_Certify  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // certify the contents of an NV index or portion of an NV index
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_NV_AUTHORIZATION         the authorization was valid but the
 //                                      authorizing entity ('authHandle')
 //                                      is not allowed to read from the Index

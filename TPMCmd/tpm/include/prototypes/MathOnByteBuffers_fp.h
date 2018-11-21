@@ -34,7 +34,7 @@
  */
 /*(Auto-generated)
  *  Created by TpmPrototypes; Version 3.0 July 18, 2017
- *  Date: Aug 12, 2017  Time: 03:40:11PM
+ *  Date: Jun 16, 2018  Time: 12:44:14AM
  */
 
 #ifndef    _MATHONBYTEBUFFERS_FP_H_
@@ -43,7 +43,7 @@
 //*** UnsignedCmpB
 // This function compare two unsigned values. The values are byte-aligned,
 // big-endian numbers (e.g, a hash).
-// return type: int
+//  Return Type: int
 //      1          if (a > b)
 //      0          if (a = b)
 //      -1         if (a < b)
@@ -57,7 +57,7 @@ UnsignedCompareB(
 
 //***SignedCompareB()
 // Compare two signed integers:
-// return type: int
+//  Return Type: int
 //      1         if a > b
 //      0         if a = b
 //      -1        if a < b
@@ -83,7 +83,7 @@ SignedCompareB(
 // This version is intended for use with RSA and requires that 'm' be
 // less than 'n'.
 //
-//  return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_SIZE         number to exponentiate is larger than the modulus
 //      TPM_RC_NO_RESULT    result will not fit into the provided buffer
 //
@@ -107,8 +107,7 @@ ModExpB(
 // a remainder ('r'). If 'q' or 'r' is not needed, then the pointer to them
 // may be set to NULL.
 //
-// return type: TPM_RC
-//      TPM_RC_SUCCESS           operation complete
+//  Return Type: TPM_RC
 //      TPM_RC_NO_RESULT         'q' or 'r' is too small to receive the result
 //
 LIB_EXPORT TPM_RC
@@ -136,6 +135,13 @@ AdjustNumberB(
 TPM2B *
 ShiftLeft(
     TPM2B       *value          // IN/OUT: value to shift and shifted value out
+);
+
+//*** IsNumeric()
+// Verifies that all the characters are simple numeric (0-9)
+BOOL
+IsNumeric(
+    TPM2B       *value
 );
 
 #endif  // _MATHONBYTEBUFFERS_FP_H_

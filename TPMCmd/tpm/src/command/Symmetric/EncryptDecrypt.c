@@ -34,22 +34,22 @@
  */
 #include "Tpm.h"
 #include "EncryptDecrypt_fp.h"
-#ifdef TPM_CC_EncryptDecrypt2
+#if CC_EncryptDecrypt2
 #include  "EncryptDecrypt_spt_fp.h"
 #endif
 
-#ifdef TPM_CC_EncryptDecrypt  // Conditional expansion of this file
+#if CC_EncryptDecrypt  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // symmetric encryption or decryption
 */
-// return type: TPM_RC
-//   TPM_RC_KEY             is not a symmetric decryption key with both
+//  Return Type: TPM_RC
+//      TPM_RC_KEY          is not a symmetric decryption key with both
 //                          public and private portions loaded
-//   TPM_RC_SIZE            'IvIn' size is incompatible with the block cipher mode;
+//      TPM_RC_SIZE         'IvIn' size is incompatible with the block cipher mode;
 //                          or 'inData' size is not an even multiple of the block
 //                          size for CBC or ECB mode
-//   TPM_RC_VALUE           'keyHandle' is restricted and the argument 'mode' does
+//      TPM_RC_VALUE        'keyHandle' is restricted and the argument 'mode' does
 //                          not match the key's mode
 TPM_RC
 TPM2_EncryptDecrypt(
@@ -57,7 +57,7 @@ TPM2_EncryptDecrypt(
     EncryptDecrypt_Out  *out            // OUT: output parameter list
     )
 {
-#ifdef TPM_CC_EncryptDecrypt2
+#if CC_EncryptDecrypt2
     return EncryptDecryptShared(in->keyHandle, in->decrypt, in->mode,
                                 &in->ivIn, &in->inData, out);
 #else
@@ -74,7 +74,7 @@ TPM2_EncryptDecrypt(
 // Input Validation
     symKey = HandleToObject(in->keyHandle);
     mode = symKey->publicArea.parameters.symDetail.sym.mode.sym;
-    attributes = symKey->publicArea.objectAttributes);
+    attributes = symKey->publicArea.objectAttributes;
 
     // The input key should be a symmetric key
     if(symKey->publicArea.type != TPM_ALG_SYMCIPHER)

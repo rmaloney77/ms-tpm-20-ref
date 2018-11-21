@@ -35,13 +35,13 @@
 #include "Tpm.h"
 #include "HierarchyControl_fp.h"
 
-#ifdef TPM_CC_HierarchyControl  // Conditional expansion of this file
+#if CC_HierarchyControl  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // Enable or disable use of a hierarchy
 */
-// return type: TPM_RC
-//   TPM_RC_AUTH_TYPE           'authHandle' is not applicable to 'hierarchy' in its
+//  Return Type: TPM_RC
+//      TPM_RC_AUTH_TYPE        'authHandle' is not applicable to 'hierarchy' in its
 //                              current state
 TPM_RC
 TPM2_HierarchyControl(

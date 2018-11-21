@@ -35,11 +35,11 @@
 #include "Tpm.h"
 #include "PolicyNvWritten_fp.h"
 
-#ifdef TPM_CC_PolicyNvWritten  // Conditional expansion of this file
+#if CC_PolicyNvWritten  // Conditional expansion of this file
 
 // Make an NV Index policy dependent on the state of the TPMA_NV_WRITTEN
 // attribute of the index.
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_VALUE         a conflicting request for the attribute has
 //                           already been processed
 TPM_RC

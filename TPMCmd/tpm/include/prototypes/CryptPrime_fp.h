@@ -71,15 +71,15 @@ MillerRabinRounds(
 // This function performs a Miller-Rabin test from FIPS 186-3. It does
 // 'iterations' trials on the number. In all likelihood, if the number
 // is not prime, the first test fails.
-// return type: BOOL
-//  TRUE        probably prime
-//  FALSE       composite
+//  Return Type: BOOL
+//      TRUE(1)         probably prime
+//      FALSE(0)        composite
 BOOL
 MillerRabin(
     bigNum           bnW,
     RAND_STATE      *rand
     );
-#ifdef TPM_ALG_RSA
+#if     ALG_RSA
 
 //*** RsaCheckPrime()
 // This will check to see if a number is prime and appropriate for an
@@ -126,6 +126,6 @@ BnGeneratePrimeForRSA(
     UINT32          exponent,
     RAND_STATE      *rand
     );
-#endif // TPM_ALG_RSA
+#endif // ALG_RSA
 
 #endif  // _CRYPTPRIME_FP_H_

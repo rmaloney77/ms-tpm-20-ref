@@ -49,9 +49,9 @@
 // All the fixed values are vendor dependent or determined by a
 // platform-specific specification. The values in the table below
 // are examples and should be changed by the vendor.
-// return type: BOOL
-//  TRUE        referenced property exists and 'value' set
-//  FALSE       referenced property does not exist
+//  Return Type: BOOL
+//      TRUE(1)         referenced property exists and 'value' set
+//      FALSE(0)        referenced property does not exist
 static BOOL
 TPMPropertyIsDefined(
     TPM_PT           property,      // IN: property
@@ -187,8 +187,8 @@ TPMPropertyIsDefined(
 
             // Note: For a LSb0 machine, the bits in a bit field are in the correct 
             // order even if the machine is MSB0. For a MSb0 machine, a TPMA will
-            // be an integer manipulated by masking (NO_BIT_FIELD_STRUCTURES will
-            // be defined) so the bits are manipulate correctly.
+            // be an integer manipulated by masking (USE_BIT_FIELD_STRUCTURES will
+            // be NO) so the bits are manipulate correctly.
             *value = attributes.u32;
             break;
         }
@@ -309,7 +309,7 @@ TPMPropertyIsDefined(
         case TPM_PT_SPLIT_MAX:
             // number of split signing operations supported by the TPM
             *value = 0;
-#ifdef TPM_ALG_ECC
+#if     ALG_ECC
             *value = sizeof(gr.commitArray) * 8;
 #endif
             break;
@@ -396,8 +396,8 @@ TPMPropertyIsDefined(
 
             // Note: For a LSb0 machine, the bits in a bit field are in the correct 
             // order even if the machine is MSB0. For a MSb0 machine, a TPMA will
-            // be an integer manipulated by masking (NO_BIT_FIELD_STRUCTURES will
-            // be defined) so the bits are manipulate correctly.
+            // be an integer manipulated by masking (USE_BIT_FIELD_STRUCTURES will
+            // be NO) so the bits are manipulate correctly.
             *value = flags.u32;
             break;
         }
@@ -422,8 +422,8 @@ TPMPropertyIsDefined(
 
             // Note: For a LSb0 machine, the bits in a bit field are in the correct 
             // order even if the machine is MSB0. For a MSb0 machine, a TPMA will
-            // be an integer manipulated by masking (NO_BIT_FIELD_STRUCTURES will
-            // be defined) so the bits are manipulate correctly.
+            // be an integer manipulated by masking (USE_BIT_FIELD_STRUCTURES will
+            // be NO) so the bits are manipulate correctly.
             *value = flags.u32;
             break;
         }
@@ -481,12 +481,12 @@ TPMPropertyIsDefined(
             *value = gp.algorithmSet;
             break;
         case TPM_PT_LOADED_CURVES:
-#ifdef TPM_ALG_ECC
+#if     ALG_ECC
         // number of loaded ECC curves
             *value = ECC_CURVE_COUNT;
-#else // TPM_ALG_ECC
+#else // ALG_ECC
             *value = 0;
-#endif // TPM_ALG_ECC
+#endif // ALG_ECC
             break;
         case TPM_PT_LOCKOUT_COUNTER:
             // current value of the lockout counter
@@ -535,7 +535,7 @@ TPMPropertyIsDefined(
 // start at 'property' and continue until 'propertyList' has as many values as
 // will fit, or the last property has been reported, or the list has as many
 // values as requested in 'count'.
-// return type: TPMI_YES_NO
+//  Return Type: TPMI_YES_NO
 //  YES        more properties are available
 //  NO         no more properties to be reported
 TPMI_YES_NO

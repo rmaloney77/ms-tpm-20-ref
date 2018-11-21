@@ -35,12 +35,12 @@
 #include "Tpm.h"
 #include "NV_Write_fp.h"
 
-#ifdef TPM_CC_NV_Write  // Conditional expansion of this file
+#if CC_NV_Write  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // Write to a NV index
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_ATTRIBUTES               Index referenced by 'nvIndex' has either
 //                                      TPMA_NV_BITS, TPMA_NV_COUNTER, or
 //                                      TPMA_NV_EVENT attribute SET

@@ -39,7 +39,7 @@
 //** Includes, Defines, and Typedefs
 #include "Tpm.h"
 
-#ifdef TPM_ALG_TDES
+#if     ALG_TDES
 
 
 #define DES_NUM_WEAK 64
@@ -88,6 +88,9 @@ CryptSetOddByteParity(
 //*** CryptDesIsWeakKey()
 // Check to see if a DES key is on the list of weak, semi-weak, or possibly weak 
 // keys.
+//  Return Type: BOOL
+//      TRUE(1)         DES key is weak
+//      FALSE(0)        DES key is not weak
 static BOOL
 CryptDesIsWeakKey(
     UINT64            k

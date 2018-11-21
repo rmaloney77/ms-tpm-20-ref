@@ -18,8 +18,8 @@
  *  of conditions and the following disclaimer.
  *
  *  Redistributions in binary form must reproduce the above copyright notice, this
- *  list of conditions and the following disclaimer in the documentation and/or other
- *  materials provided with the distribution.
+ *  list of conditions and the following disclaimer in the documentation and/or
+ *  other materials provided with the distribution.
  *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ""AS IS""
  *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -32,30 +32,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+//** Includes
 
-#include "Tpm.h"
-#include "SMAC_fp.h"
+#include "PlatformData.h"
+#include "Platform_fp.h"
 
-#ifdef TPM_CC_SMAC          // Conditional expansion of this file
+//** Functions
 
-// return type: TPM_RC
-//   TPM_RC_KEY             is a restricted key or does not have public and private 
-//                          portions loaded
-//   TPM_RC_SIZE            'IvIn' size is not the block size of the cipher or
-//                          or 'inData' size is not an even multiple of the block
-//                          size and 'lastBlock' is not YES
-//   TPM_RC_VALUE           'keyHandle' is restricted and the argument 'mode' does
-//                          not match the key's mode
-TPM_RC
-TPM2_SMAC(
-    SMAC_In   *in,            // IN: input parameter list
-    SMAC_Out  *out            // OUT: output parameter list
+//***_plat__LocalityGet()
+// Get the most recent command locality in locality value form.
+// This is an integer value for locality and not a locality structure
+// The locality can be 0-4 or 32-255. 5-31 is not allowed.
+LIB_EXPORT unsigned char
+_plat__LocalityGet(
+    void
     )
 {
-    NOT_REFERENCED(in);
-    NOT_REFERENCED(out);
-    return TPM_RC_SUCCESS;
-
+    return s_locality;
 }
 
-#endif // CC_SMAC
+//***_plat__LocalitySet()
+// Set the most recent command locality in locality value form
+LIB_EXPORT void
+_plat__LocalitySet(
+    unsigned char    locality
+    )
+{
+    if(locality > 4 && locality < 32)
+        locality = 0;
+    s_locality = locality;
+    return;
+}

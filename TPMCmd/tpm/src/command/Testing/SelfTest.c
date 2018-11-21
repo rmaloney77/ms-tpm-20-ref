@@ -35,12 +35,12 @@
 #include "Tpm.h"
 #include "SelfTest_fp.h"
 
-#ifdef TPM_CC_SelfTest  // Conditional expansion of this file
+#if CC_SelfTest  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // perform a test of TPM capabilities
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_CANCELED             the command was canceled (some incremental
 //                                  process may have been made)
 //      TPM_RC_TESTING              self test in process

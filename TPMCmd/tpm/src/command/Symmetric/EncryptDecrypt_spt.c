@@ -36,18 +36,18 @@
 #include "EncryptDecrypt_fp.h"
 #include "EncryptDecrypt_spt_fp.h"
 
-#ifdef TPM_CC_EncryptDecrypt2
+#if CC_EncryptDecrypt2
 
 /*(See part 3 specification)
 // symmetric encryption or decryption
 */
-// return type: TPM_RC
-//   TPM_RC_KEY             is not a symmetric decryption key with both
+//  Return Type: TPM_RC
+//      TPM_RC_KEY          is not a symmetric decryption key with both
 //                          public and private portions loaded
-//   TPM_RC_SIZE            'IvIn' size is incompatible with the block cipher mode;
+//      TPM_RC_SIZE         'IvIn' size is incompatible with the block cipher mode;
 //                          or 'inData' size is not an even multiple of the block
 //                          size for CBC or ECB mode
-//   TPM_RC_VALUE           'keyHandle' is restricted and the argument 'mode' does
+//      TPM_RC_VALUE        'keyHandle' is restricted and the argument 'mode' does
 //                          not match the key's mode
 TPM_RC
 EncryptDecryptShared(

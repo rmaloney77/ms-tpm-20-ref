@@ -34,7 +34,7 @@
  */
 /*(Auto-generated)
  *  Created by TpmPrototypes; Version 3.0 July 18, 2017
- *  Date: Aug 12, 2017  Time: 03:40:11PM
+ *  Date: Sep 27, 2018  Time: 07:41:22PM
  */
 
 #ifndef    _PLATFORM_FP_H_
@@ -44,9 +44,9 @@
 
 //***_plat__IsCanceled()
 // Check if the cancel flag is set
-// return type: BOOL
-//      TRUE(1)      if cancel flag is set
-//      FALSE(0)     if cancel flag is not set
+//  Return Type: int
+//      TRUE(1)         if cancel flag is set
+//      FALSE(0)        if cancel flag is not set
 LIB_EXPORT int
 _plat__IsCanceled(
     void
@@ -85,11 +85,13 @@ _plat__TimerRestart(
     void
     );
 
+//*** _plat__RealTime()
+// This is another, probably futile, attempt to define a portable function
+// that will return a 64-bit clock value that has mSec resolution.
 uint64_t
 _plat__RealTime(
     void
 );
-
 
 //***_plat__TimerRead()
 // This function provides access to the tick timer of the platform. The TPM code
@@ -104,8 +106,6 @@ _plat__RealTime(
 // allowed to go backwards. If the time provided by the system can go backwards
 // during a power discontinuity, then the _plat__Signal_PowerOn should call
 // _plat__TimerReset().
-//
-// The code in this function should be replaced by a read of a hardware tick timer.
 LIB_EXPORT uint64_t
 _plat__TimerRead(
     void
@@ -147,7 +147,11 @@ _plat__ClockAdjustRate(
 
 //** From Entropy.c 
 
-// return type: int32_t
+//*** _plat__GetEntropy()
+// This function is used to get available hardware entropy. In a hardware
+// implementation of this function, there would be no call to the system
+// to get entropy.
+//  Return Type: int32_t
 //  < 0        hardware failure of the entropy generator, this is sticky
 // >= 0        the returned amount of entropy (bytes)
 //
@@ -155,7 +159,7 @@ LIB_EXPORT int32_t
 _plat__GetEntropy(
     unsigned char       *entropy,           // output buffer
     uint32_t             amount             // amount requested
-    );
+);
 
 
 //** From LocalityPlat.c 
@@ -185,7 +189,7 @@ _plat__LocalitySet(
 LIB_EXPORT void
 _plat__NvErrors(
     int              recoverable,
-    int            unrecoverable
+    int              unrecoverable
     );
 
 //***_plat__NVEnable()
@@ -199,7 +203,7 @@ _plat__NvErrors(
 // The recovery from an integrity failure depends on where the error occurred. It
 // it was in the state that is discarded by TPM Reset, then the error is
 // recoverable if the TPM is reset. Otherwise, the TPM must go into failure mode.
-// return type: int
+//  Return Type: int
 //      0           if success
 //      > 0         if receive recoverable error
 //      <0          if unrecoverable error
@@ -217,7 +221,7 @@ _plat__NVDisable(
 
 //***_plat__IsNvAvailable()
 // Check if NV is available
-// return type: int
+//  Return Type: int
 //      0               NV is available
 //      1               NV is not available due to write failure
 //      2               NV is not available due to rate limit
@@ -238,9 +242,9 @@ _plat__NvMemoryRead(
 //*** _plat__NvIsDifferent()
 // This function checks to see if the NV is different from the test value. This is
 // so that NV will not be written if it has not changed.
-// return value: int
-//  TRUE(1)    the NV location is different from the test value
-//  FALSE(0)   the NV location is the same as the test value
+//  Return Type: int
+//      TRUE(1)         the NV location is different from the test value
+//      FALSE(0)        the NV location is the same as the test value
 LIB_EXPORT int
 _plat__NvIsDifferent(
     unsigned int     startOffset,   // IN: read start
@@ -283,8 +287,9 @@ _plat__NvMemoryMove(
     );
 
 //***_plat__NvCommit()
-// Update NV chip
-// return type: int
+// This function writes the local copy of NV to NV for permanent store. It will write
+// NV_MEMORY_SIZE bytes to NV. If a file is use, the entire file is written.
+//  Return Type: int
 //  0       NV write success
 //  non-0   NV write fail
 LIB_EXPORT int
@@ -327,9 +332,9 @@ _plat__Signal_PowerOn(
 // TPM code and, if the hardware actually works this way, it is hard to make it
 // look like anything else. So, the burden is placed on the TPM code rather than the
 // platform code
-// return type: int
-//  TRUE(1)     power was lost
-//  FALSE(0)    power was not lost
+//  Return Type: int
+//      TRUE(1)         power was lost
+//      FALSE(0)        power was not lost
 LIB_EXPORT int
 _plat__WasPowerLost(
     void
@@ -354,9 +359,9 @@ _plat__Signal_PowerOff(
 
 //***_plat__PhysicalPresenceAsserted()
 // Check if physical presence is signaled
-// return type: int
-//      TRUE(1)          if physical presence is signaled
-//      FALSE(0)         if physical presence is not signaled
+//  Return Type: int
+//      TRUE(1)         if physical presence is signaled
+//      FALSE(0)        if physical presence is not signaled
 LIB_EXPORT int
 _plat__PhysicalPresenceAsserted(
     void

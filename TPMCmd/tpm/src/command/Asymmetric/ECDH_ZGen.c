@@ -37,12 +37,12 @@
 
 #ifdef TPM_CC_ECDH_ZGen  // Conditional expansion of this file
 
-#ifdef TPM_ALG_ECC
+#if     ALG_ECC
 
 /*(See part 3 specification)
 // This command uses the TPM to recover the Z value from a public point
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_ATTRIBUTES               key referenced by 'keyA' is restricted or
 //                                      not a decrypt key
 //      TPM_RC_KEY                      key referenced by 'keyA' is not an ECC key

@@ -34,7 +34,7 @@
  */
 /*(Auto-generated)
  *  Created by TpmStructures; Version 3.0 June 16, 2017
- *  Date: Aug 14, 2017  Time: 02:53:08PM
+ *  Date: Jul 16, 2018  Time: 02:57:15PM
  */
 
 #include    "Tpm.h"
@@ -45,7 +45,7 @@
 // BigNum format is so that it does not have to be reformatted before being used
 // by the crypto library.
 
-#if defined TPM_ALG_ECC
+#if ALG_ECC
 
 #if USE_BN_ECC_DATA
 #       define TO_ECC_64                        TO_CRYPT_WORD_64
@@ -83,7 +83,6 @@
         } NAME = {BN_MIN_ALLOC(bytes), BYTES_TO_CRYPT_WORDS(bytes),{initializer}}
 // define how to transform a curve parameter address into an entry into an 
 // ECC_CURVE_DATA structure. 
-//# define ECC_ENTRY(val, x)    (bigNum)&##val##_##x
 # define ECC_ENTRY(val, x)    (bigNum)&val##_##x
 
 ECC_CONST(ECC_ZERO, 0, 0);
@@ -96,7 +95,7 @@ ECC_CONST(ECC_ZERO, 0, 0);
 TPM2B_BYTE_VALUE(1);
 TPM2B_1_BYTE_VALUE ECC_ZERO = {1, {0}};
 
-# define ECC_ENTRY(val, x)    &##val##_##x##.b
+# define ECC_ENTRY(val, x)    &val##_##x##.b
 
 #endif
 

@@ -35,12 +35,12 @@
 #include "Tpm.h"
 #include "Clear_fp.h"
 
-#ifdef TPM_CC_Clear  // Conditional expansion of this file
+#if CC_Clear  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // Clear owner
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_DISABLED             Clear command has been disabled
 TPM_RC
 TPM2_Clear(

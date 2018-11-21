@@ -112,7 +112,7 @@ MpInitialize(
     return toInit;
 }
 
-#ifdef LIBRARY_COMPATIBILITY_CHECK
+#if LIBRARY_COMPATIBILITY_CHECK
 //** MathLibraryCompatibililtyCheck()
 // This function is only used during development to make sure that the library
 // that is being referenced is using the same size of data structures as the TPM.
@@ -135,7 +135,7 @@ MathLibraryCompatibilityCheck(
     // Make sure the values are consistent
     cAssert(wolfTemp->used == (int)tpmTemp->size);
     for(i = 0; i < tpmTemp->size; i++)
-        cAssert(wolfTemp->d[i] == tpmTemp->d[i]);
+        cAssert(wolfTemp->dp[i] == tpmTemp->d[i]);
 }
 #endif
 

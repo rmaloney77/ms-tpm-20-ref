@@ -35,17 +35,17 @@
 #include "Tpm.h"
 #include "HMAC_Start_fp.h"
 
-#ifdef TPM_CC_HMAC_Start  // Conditional expansion of this file
+#if CC_HMAC_Start  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // Initialize a HMAC sequence and create a sequence object
 */
-// return type: TPM_RC
-//   TPM_RC_ATTRIBUTES          key referenced by 'handle' is not a signing key
+//  Return Type: TPM_RC
+//      TPM_RC_ATTRIBUTES       key referenced by 'handle' is not a signing key
 //                              or is restricted
-//   TPM_RC_OBJECT_MEMORY       no space to create an internal object
-//   TPM_RC_KEY                 key referenced by 'handle' is not an HMAC key
-//   TPM_RC_VALUE               'hashAlg' is not compatible with the hash algorithm
+//      TPM_RC_OBJECT_MEMORY    no space to create an internal object
+//      TPM_RC_KEY              key referenced by 'handle' is not an HMAC key
+//      TPM_RC_VALUE            'hashAlg' is not compatible with the hash algorithm
 //                              of the scheme of the object referenced by 'handle'
 TPM_RC
 TPM2_HMAC_Start(

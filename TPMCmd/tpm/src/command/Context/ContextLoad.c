@@ -35,7 +35,7 @@
 #include "Tpm.h"
 #include "ContextLoad_fp.h"
 
-#ifdef TPM_CC_ContextLoad  // Conditional expansion of this file
+#if CC_ContextLoad  // Conditional expansion of this file
 
 #include "Context_spt_fp.h"
 
@@ -43,16 +43,16 @@
 // Load context
 */
 
-// return type: TPM_RC
-//    TPM_RC_CONTEXT_GAP        there is only one available slot and this is not
-//                              the oldest saved session context
-//    TPM_RC_HANDLE             'context.savedHandle' does not reference a saved
-//                              session
-//    TPM_RC_HIERARCHY          'context.hierarchy' is disabled
-//    TPM_RC_INTEGRITY          'context' integrity check fail
-//    TPM_RC_OBJECT_MEMORY      no free slot for an object
-//    TPM_RC_SESSION_MEMORY     no free session slots
-//    TPM_RC_SIZE               incorrect context blob size
+//  Return Type: TPM_RC
+//      TPM_RC_CONTEXT_GAP          there is only one available slot and this is not
+//                                  the oldest saved session context
+//      TPM_RC_HANDLE               context.savedHandle' does not reference a saved
+//                                  session
+//      TPM_RC_HIERARCHY            'context.hierarchy' is disabled
+//      TPM_RC_INTEGRITY            'context' integrity check fail
+//      TPM_RC_OBJECT_MEMORY        no free slot for an object
+//      TPM_RC_SESSION_MEMORY       no free session slots
+//      TPM_RC_SIZE                 incorrect context blob size
 TPM_RC
 TPM2_ContextLoad(
     ContextLoad_In      *in,            // IN: input parameter list
@@ -111,7 +111,7 @@ TPM2_ContextLoad(
 
     // Decrypt context data in place
     CryptSymmetricDecrypt(buffer, CONTEXT_ENCRYPT_ALG, CONTEXT_ENCRYPT_KEY_BITS,
-                          symKey.t.buffer, &iv, TPM_ALG_CFB, size, buffer);
+                          symKey.t.buffer, &iv, ALG_CFB_VALUE, size, buffer);
     // See if the fingerprint value matches. If not, it is symptomatic of either
     // a broken TPM or that the TPM is under attack so go into failure mode.
     if(!MemoryEqual(buffer, &in->context.sequence, sizeof(in->context.sequence)))

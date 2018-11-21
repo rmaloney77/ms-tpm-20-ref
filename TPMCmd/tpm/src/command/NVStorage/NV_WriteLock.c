@@ -35,12 +35,12 @@
 #include "Tpm.h"
 #include "NV_WriteLock_fp.h"
 
-#ifdef TPM_CC_NV_WriteLock  // Conditional expansion of this file
+#if CC_NV_WriteLock  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // Set write lock on a NV index
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_ATTRIBUTES               neither TPMA_NV_WRITEDEFINE nor
 //                                      TPMA_NV_WRITE_STCLEAR is SET in Index
 //                                      referenced by 'nvIndex'

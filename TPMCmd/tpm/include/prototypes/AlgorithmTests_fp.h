@@ -34,7 +34,7 @@
  */
 /*(Auto-generated)
  *  Created by TpmPrototypes; Version 3.0 July 18, 2017
- *  Date: Aug 12, 2017  Time: 03:40:11PM
+ *  Date: Sep 27, 2018  Time: 09:28:59PM
  */
 
 #ifndef    _ALGORITHMTESTS_FP_H_
@@ -43,7 +43,7 @@
 #if SELF_TEST
 
 //*** TestAlgorithm()
-// Dispatches to the correct test function for the algorithm or get a list of
+// Dispatches to the correct test function for the algorithm or gets a list of
 // testable algorithms.
 //
 // If 'toTest' is not NULL, then the test decisions are based on the algorithm
@@ -59,9 +59,8 @@
 //
 // Note: 'toTest' will only ever have bits set for implemented algorithms but 'alg'
 // can be anything.
-// return type: TPM_RC
-//  TPM_RC_SUCCESS      test complete
-//  TPM_RC_CANCELED     test was canceled
+//  Return Type: TPM_RC
+//      TPM_RC_CANCELED     test was canceled
 LIB_EXPORT
 TPM_RC
 TestAlgorithm(

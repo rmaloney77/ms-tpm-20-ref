@@ -34,7 +34,7 @@
  */
 /*(Auto-generated)
  *  Created by TpmPrototypes; Version 3.0 July 18, 2017
- *  Date: Aug 12, 2017  Time: 03:40:11PM
+ *  Date: Jun 16, 2018  Time: 08:35:57PM
  */
 
 #ifndef    _ALGORITHMCAP_FP_H_
@@ -43,7 +43,7 @@
 //** AlgorithmCapGetImplemented()
 // This function is used by TPM2_GetCapability() to return a list of the
 // implemented algorithms.
-// return type: TPMI_YES_NO
+//  Return Type: TPMI_YES_NO
 //  YES        more algorithms to report
 //  NO         no more algorithms to report
 TPMI_YES_NO
@@ -53,6 +53,8 @@ AlgorithmCapGetImplemented(
     TPML_ALG_PROPERTY           *algList    // OUT: algorithm list
     );
 
+//** AlgorithmGetImplementedVector()
+// This function returns the bit vector of the implemented algorithms.
 LIB_EXPORT
 void
 AlgorithmGetImplementedVector(

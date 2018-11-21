@@ -35,13 +35,13 @@
 #include "Tpm.h"
 #include "PolicyDuplicationSelect_fp.h"
 
-#ifdef TPM_CC_PolicyDuplicationSelect  // Conditional expansion of this file
+#if CC_PolicyDuplicationSelect  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // allows qualification of duplication so that it a specific new parent may be
 // selected or a new parent selected for a specific object.
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_COMMAND_CODE   'commandCode' of 'policySession; is not empty
 //      TPM_RC_CPHASH         'cpHash' of 'policySession' is not empty
 TPM_RC

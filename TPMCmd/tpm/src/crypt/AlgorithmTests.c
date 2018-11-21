@@ -35,8 +35,8 @@
 //** Introduction
 // This file contains the code to perform the various self-test functions.
 //
-// IMPLEMENTATION NOTE: Large local variables are made static to minimize stack
-// usage, which is critical for resource constrained platforms.
+// NOTE: In this implementation, large local variables are made static to minimize 
+// stack usage, which is critical for stack-constrained platforms.
 
 //** Includes and Defines
 #include    "Tpm.h"
@@ -95,7 +95,7 @@ TestHash(
     const TPM2B             *testDigest = NULL;
 //    TPM2B_TYPE(HMAC_BLOCK, DEFAULT_TEST_HASH_BLOCK_SIZE);
 
-    pAssert(hashAlg != TPM_ALG_NULL);
+    pAssert(hashAlg != ALG_NULL_VALUE);
     switch(hashAlg)
     {
 #if ALG_SHA1
@@ -207,6 +207,9 @@ TestSymmetricAlgorithm(
 //*** AllSymsAreDone()
 // Checks if both symmetric algorithms have been tested. This is put here
 // so that addition of a symmetric algorithm will be relatively easy to handle
+//  Return Type: BOOL
+//      TRUE(1)         all symmetric algorithms tested
+//      FALSE(0)        not all symmetric algorithms tested
 static BOOL
 AllSymsAreDone(
     ALGORITHM_VECTOR        *toTest
@@ -217,6 +220,9 @@ AllSymsAreDone(
 
 //*** AllModesAreDone()
 // Checks if all the modes have been tested
+//  Return Type: BOOL
+//      TRUE(1)         all modes tested
+//      FALSE(0)        all modes not tested
 static BOOL
 AllModesAreDone(
     ALGORITHM_VECTOR            *toTest
@@ -308,7 +314,7 @@ TestSymmetric(
 }
 
 //** RSA Tests
-#ifdef TPM_ALG_RSA
+#if     ALG_RSA
 
 //*** Introduction
 // The tests are for public key only operations and for private key operations.
@@ -372,7 +378,7 @@ TestRsaEncryptDecrypt(
     rsaScheme.details.anySig.hashAlg = DEFAULT_TEST_HASH;
     CLEAR_BOTH(scheme);
     CLEAR_BOTH(ALG_NULL_VALUE);
-    if(scheme == TPM_ALG_NULL)
+    if(scheme == ALG_NULL_VALUE)
     {
         // This is an encryption scheme using the private key without any encoding.
         memcpy(testInput.t.buffer, c_RsaTestValue, sizeof(c_RsaTestValue));
@@ -572,11 +578,11 @@ TestRsa(
     return result;
 }
 
-#endif // TPM_ALG_RSA
+#endif // ALG_RSA
 
 //** ECC Tests
 
-#ifdef TPM_ALG_ECC
+#if     ALG_ECC
 
 //*** LoadEccParameter()
 // This function is mostly for readability and type checking
@@ -627,6 +633,7 @@ TestECDH(
     return result;
 }
 
+//*** TestEccSignAndVerify()
 static TPM_RC
 TestEccSignAndVerify(
     TPM_ALG_ID                   scheme,
@@ -701,6 +708,7 @@ TestEccSignAndVerify(
     return TPM_RC_SUCCESS;
 }
 
+//*** TestKDFa()
 static TPM_RC
 TestKDFa(
     ALGORITHM_VECTOR        *toTest
@@ -709,7 +717,7 @@ TestKDFa(
     static TPM2B_KDF_TEST_KEY   keyOut;
     UINT32                      counter = 0;
 //
-    CLEAR_BOTH(TPM_ALG_KDF1_SP800_108);
+    CLEAR_BOTH(ALG_KDF1_SP800_108_VALUE);
 
     keyOut.t.size = CryptKDFa(KDF_TEST_ALG, &c_kdfTestKeyIn.b, &c_kdfTestLabel.b,
                               &c_kdfTestContextU.b, &c_kdfTestContextV.b,
@@ -723,6 +731,7 @@ TestKDFa(
     return TPM_RC_SUCCESS;
 }
 
+//*** TestEcc()
 static TPM_RC
 TestEcc(
     TPM_ALG_ID              alg,
@@ -759,7 +768,7 @@ TestEcc(
     return result;
 }
 
-#endif // TPM_ALG_ECC
+#endif // ALG_ECC
 
 //*** TestAlgorithm()
 // Dispatches to the correct test function for the algorithm or gets a list of
@@ -778,9 +787,8 @@ TestEcc(
 //
 // Note: 'toTest' will only ever have bits set for implemented algorithms but 'alg'
 // can be anything.
-// return type: TPM_RC
-//  TPM_RC_SUCCESS      test complete
-//  TPM_RC_CANCELED     test was canceled
+//  Return Type: TPM_RC
+//      TPM_RC_CANCELED     test was canceled
 LIB_EXPORT
 TPM_RC
 TestAlgorithm(
@@ -788,9 +796,9 @@ TestAlgorithm(
     ALGORITHM_VECTOR        *toTest
     )
 {
-    TPM_ALG_ID              first = (alg == TPM_ALG_ERROR) ? TPM_ALG_FIRST : alg;
-    TPM_ALG_ID              last = (alg == TPM_ALG_ERROR) ? TPM_ALG_LAST : alg;
-    BOOL                    doTest = (alg != TPM_ALG_ERROR);
+    TPM_ALG_ID              first = (alg == ALG_ERROR_VALUE) ? ALG_FIRST_VALUE : alg;
+    TPM_ALG_ID              last = (alg == ALG_ERROR_VALUE) ? ALG_LAST_VALUE : alg;
+    BOOL                    doTest = (alg != ALG_ERROR_VALUE);
     TPM_RC                  result = TPM_RC_SUCCESS;
 
     if(toTest == NULL)
@@ -800,7 +808,7 @@ TestAlgorithm(
     // algorithm or just clear a bit if there is no test for the algorithm. So,
     // either this loop will be executed once for the selected algorithm or once for
     // each of the possible algorithms. If it is executed more than once ('alg' ==
-    // TPM_ALG_ERROR), then no test will be run but bits will be cleared for 
+    // ALG_ERROR), then no test will be run but bits will be cleared for 
     // unimplemented algorithms. This was done this way so that there is only one
     // case statement with all of the algorithms. It was easier to have one case
     // statement than to have multiple ones to manage whenever an algorithm ID is
@@ -823,36 +831,36 @@ TestAlgorithm(
         switch(alg)
         {
         // Symmetric block ciphers
-#ifdef TPM_ALG_AES
+#if     ALG_AES
             case ALG_AES_VALUE:
-#endif
-#ifdef TPM_ALG_SM4
+#endif  // ALG_AES
+#if     ALG_SM4
             // if SM4 is implemented, its test is like other block ciphers but there
             // aren't any test vectors for it yet
 //            case ALG_SM4_VALUE:
-#endif
-#ifdef TPM_ALG_CAMELLIA
+#endif  // ALG_SM4
+#if     ALG_CAMELLIA
             // no test vectors for camellia
 //            case ALG_CAMELLIA_VALUE:
 #endif
         // Symmetric modes
-#ifndef TPM_ALG_CFB
+#if     !ALG_CFB
 #   error   CFB is required in all TPM implementations
-#endif // !TPM_ALG_CFB
+#endif // !ALG_CFB
             case ALG_CFB_VALUE:
                 if(doTest)
                     result = TestSymmetric(alg, toTest);
                 break;
-#ifdef TPM_ALG_CTR
+#if     ALG_CTR
             case ALG_CTR_VALUE:
-#endif // TPM_ALG_CRT
-#ifdef TPM_ALG_OFB
+#endif // ALG_CRT
+#if     ALG_OFB
             case ALG_OFB_VALUE:
-#endif // TPM_ALG_OFB
-#ifdef TPM_ALG_CBC
+#endif // ALG_OFB
+#if     ALG_CBC
             case ALG_CBC_VALUE:
-#endif // TPM_ALG_CBC
-#ifdef TPM_ALG_ECB
+#endif // ALG_CBC
+#if     ALG_ECB
             case ALG_ECB_VALUE:
 #endif
                 if(doTest)
@@ -864,7 +872,7 @@ TestAlgorithm(
                     if(toTest == &g_toTest)
                         CLEAR_BIT(alg, *toTest);
                 break;
-#ifndef TPM_ALG_HMAC
+#if     !ALG_HMAC
 #   error   HMAC is required in all TPM implementations
 #endif
             case ALG_HMAC_VALUE:
@@ -879,34 +887,34 @@ TestAlgorithm(
                     // tested because this uses HMAC
                     SET_BOTH(DEFAULT_TEST_HASH);
                 break;
-#ifdef TPM_ALG_SHA1
+#if     ALG_SHA1
             case ALG_SHA1_VALUE:
-#endif // TPM_ALG_SHA1
-#ifdef TPM_ALG_SHA256
+#endif // ALG_SHA1
+#if     ALG_SHA256
             case ALG_SHA256_VALUE:
-#endif // TPM_ALG_SHA256
-#ifdef TPM_ALG_SHA384
+#endif // ALG_SHA256
+#if     ALG_SHA384
             case ALG_SHA384_VALUE:
-#endif // TPM_ALG_SHA384
-#ifdef TPM_ALG_SHA512
+#endif // ALG_SHA384
+#if     ALG_SHA512
             case ALG_SHA512_VALUE:
-#endif // TPM_ALG_SHA512
+#endif // ALG_SHA512
             // if SM3 is implemented its test is like any other hash, but there
             // aren't any test vectors yet.
-#ifdef TPM_ALG_SM3_256
+#if     ALG_SM3_256
 //            case ALG_SM3_256_VALUE:
-#endif // TPM_ALG_SM3_256
+#endif // ALG_SM3_256
                 if(doTest)
                     result = TestHash(alg, toTest);
                 break;
     // RSA-dependent
-#ifdef TPM_ALG_RSA
+#if     ALG_RSA
             case ALG_RSA_VALUE:
                 CLEAR_BOTH(alg);
                 if(doTest)
-                    result = TestRsa(TPM_ALG_NULL, toTest);
+                    result = TestRsa(ALG_NULL_VALUE, toTest);
                 else
-                    SET_BOTH(TPM_ALG_NULL);
+                    SET_BOTH(ALG_NULL_VALUE);
                 break;
             case ALG_RSASSA_VALUE:
             case ALG_RSAES_VALUE:
@@ -916,14 +924,14 @@ TestAlgorithm(
                 if(doTest)
                     result = TestRsa(alg, toTest);
                 break;
-#endif // TPM_ALG_RSA
-#ifdef TPM_ALG_KDF1_SP800_108
+#endif // ALG_RSA
+#if     ALG_KDF1_SP800_108
             case ALG_KDF1_SP800_108_VALUE:
                 if(doTest)
                     result = TestKDFa(toTest);
                 break;
-#endif // TPM_ALG_KDF1_SP800_108
-#ifdef TPM_ALG_ECC
+#endif // ALG_KDF1_SP800_108
+#if     ALG_ECC
     // ECC dependent but no tests
     //        case ALG_ECDAA_VALUE:
     //        case ALG_ECMQV_VALUE:
@@ -944,7 +952,7 @@ TestAlgorithm(
                 if(doTest)
                     result = TestEcc(alg, toTest);
                 break;
-#endif // TPM_ALG_ECC
+#endif // ALG_ECC
             default:
                 CLEAR_BIT(alg, *toTest);
                 break;

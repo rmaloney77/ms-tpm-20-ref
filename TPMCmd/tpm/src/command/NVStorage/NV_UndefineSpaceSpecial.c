@@ -36,12 +36,12 @@
 #include "NV_UndefineSpaceSpecial_fp.h"
 #include "SessionProcess_fp.h"
 
-#ifdef TPM_CC_NV_UndefineSpaceSpecial  // Conditional expansion of this file
+#if CC_NV_UndefineSpaceSpecial  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // Delete a NV index that requires policy to delete.
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_ATTRIBUTES               TPMA_NV_POLICY_DELETE is not SET in the
 //                                      Index referenced by 'nvIndex'
 TPM_RC

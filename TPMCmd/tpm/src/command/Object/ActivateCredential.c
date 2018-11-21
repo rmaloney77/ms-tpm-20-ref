@@ -35,23 +35,23 @@
 #include "Tpm.h"
 #include "ActivateCredential_fp.h"
 
-#ifdef TPM_CC_ActivateCredential  // Conditional expansion of this file
+#if CC_ActivateCredential  // Conditional expansion of this file
 
 #include "Object_spt_fp.h"
 
 /*(See part 3 specification)
 // Activate Credential with an object
 */
-// return type: TPM_RC
-//   TPM_RC_ATTRIBUTES          'keyHandle' does not reference a decryption key
-//   TPM_RC_ECC_POINT           'secret' is invalid (when 'keyHandle' is an ECC key)
-//   TPM_RC_INSUFFICIENT        'secret' is invalid (when 'keyHandle' is an ECC key)
-//   TPM_RC_INTEGRITY           'credentialBlob' fails integrity test
-//   TPM_RC_NO_RESULT           'secret' is invalid (when 'keyHandle' is an ECC key)
-//   TPM_RC_SIZE                'secret' size is invalid or the 'credentialBlob'
+//  Return Type: TPM_RC
+//      TPM_RC_ATTRIBUTES       'keyHandle' does not reference a decryption key
+//      TPM_RC_ECC_POINT        'secret' is invalid (when 'keyHandle' is an ECC key)
+//      TPM_RC_INSUFFICIENT     'secret' is invalid (when 'keyHandle' is an ECC key)
+//      TPM_RC_INTEGRITY        'credentialBlob' fails integrity test
+//      TPM_RC_NO_RESULT        'secret' is invalid (when 'keyHandle' is an ECC key)
+//      TPM_RC_SIZE             'secret' size is invalid or the 'credentialBlob'
 //                              does not unmarshal correctly
-//   TPM_RC_TYPE                'keyHandle' does not reference an asymmetric key.
-//   TPM_RC_VALUE               'secret' is invalid (when 'keyHandle' is an RSA key)
+//      TPM_RC_TYPE             'keyHandle' does not reference an asymmetric key.
+//      TPM_RC_VALUE            'secret' is invalid (when 'keyHandle' is an RSA key)
 TPM_RC
 TPM2_ActivateCredential(
     ActivateCredential_In   *in,            // IN: input parameter list

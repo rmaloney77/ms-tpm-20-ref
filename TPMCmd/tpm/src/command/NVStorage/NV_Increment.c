@@ -35,12 +35,12 @@
 #include "Tpm.h"
 #include "NV_Increment_fp.h"
 
-#ifdef TPM_CC_NV_Increment  // Conditional expansion of this file
+#if CC_NV_Increment  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // Increment a NV counter
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_ATTRIBUTES               NV index is not a counter
 //      TPM_RC_NV_AUTHORIZATION         authorization failure
 //      TPM_RC_NV_LOCKED                Index is write locked

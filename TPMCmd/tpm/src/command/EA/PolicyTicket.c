@@ -35,14 +35,14 @@
 #include "Tpm.h"
 #include "PolicyTicket_fp.h"
 
-#ifdef TPM_CC_PolicyTicket  // Conditional expansion of this file
+#if CC_PolicyTicket  // Conditional expansion of this file
 
 #include "Policy_spt_fp.h"
 
 /*(See part 3 specification)
 // Include ticket to the policy evaluation
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_CPHASH           policy's cpHash was previously set to a different
 //                              value
 //      TPM_RC_EXPIRED          'timeout' value in the ticket is in the past and the

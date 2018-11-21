@@ -37,13 +37,13 @@
 
 #ifdef TPM_CC_ECC_Parameters  // Conditional expansion of this file
 
-#ifdef TPM_ALG_ECC
+#if     ALG_ECC
 
 /*(See part 3 specification)
 // This command returns the parameters of an ECC curve identified by its TCG
 // assigned curveID
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_VALUE                    Unsupported ECC curve ID
 TPM_RC
 TPM2_ECC_Parameters(

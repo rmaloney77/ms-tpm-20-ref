@@ -35,14 +35,14 @@
 #include "Tpm.h"
 #include "EventSequenceComplete_fp.h"
 
-#ifdef TPM_CC_EventSequenceComplete  // Conditional expansion of this file
+#if CC_EventSequenceComplete  // Conditional expansion of this file
 
 /*(See part 3 specification)
   Complete an event sequence and flush the object.
 */
-// return type: TPM_RC
-//   TPM_RC_LOCALITY        PCR extension is not allowed at the current locality
-//   TPM_RC_MODE            input handle is not a valid event sequence object
+//  Return Type: TPM_RC
+//      TPM_RC_LOCALITY     PCR extension is not allowed at the current locality
+//      TPM_RC_MODE         input handle is not a valid event sequence object
 TPM_RC
 TPM2_EventSequenceComplete(
     EventSequenceComplete_In    *in,            // IN: input parameter list

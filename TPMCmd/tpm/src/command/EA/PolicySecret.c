@@ -35,7 +35,7 @@
 #include "Tpm.h"
 #include "PolicySecret_fp.h"
 
-#ifdef TPM_CC_PolicySecret  // Conditional expansion of this file
+#if CC_PolicySecret  // Conditional expansion of this file
 
 #include "Policy_spt_fp.h"
 #include "NV_spt_fp.h"
@@ -43,7 +43,7 @@
 /*(See part 3 specification)
 // Add a secret-based authorization to the policy evaluation
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_CPHASH           cpHash for policy was previously set to a
 //                              value that is not the same as 'cpHashA'
 //      TPM_RC_EXPIRED          'expiration' indicates a time in the past

@@ -32,21 +32,101 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-//**Introduction
-/*
-    This file contains the NV read and write access methods.  This implementation
-    uses RAM/file and does not manage the RAM/file as NV blocks.
-    The implementation may become more sophisticated over time.
-*/
+//** Description
+//
+//    This file contains the NV read and write access methods.  This implementation
+//    uses RAM/file and does not manage the RAM/file as NV blocks.
+//    The implementation may become more sophisticated over time.
+//
 
-//** Includes
+//** Includes and Local 
 #include <memory.h>
 #include <string.h>
 #include <assert.h>
 #include "PlatformData.h"
 #include "Platform_fp.h"
+#if FILE_BACKED_NV
+#   include         <stdio.h>
+FILE                *s_NvFile = NULL;
+#endif
 
 //**Functions
+
+//*** NvFileOpen()
+// This function opens the file used to hold the NV image.
+#if FILE_BACKED_NV
+//  Return Type: int
+//  >= 0        success
+//  -1          error
+static int
+NvFileOpen(
+    const char      *mode
+)
+{
+    // Try to open an exist NVChip file for read/write
+#   if defined _MSC_VER && 1
+    if(fopen_s(&s_NvFile, "NVChip", mode) != 0)
+        s_NvFile = NULL;
+#   else
+    s_NvFile = fopen("NVChip", mode);
+#   endif
+    return (s_NvFile == NULL) ? -1 : 0;
+}
+
+//*** NvFileCommit()
+// Write all of the contents of the NV image to a file.
+//  Return Type: int
+//      TRUE(1)         success
+//      FALSE(0)        failure
+static int
+NvFileCommit(
+    void
+)
+{    
+    int         OK;
+    // If NV file is not available, return failure
+    if(s_NvFile == NULL)
+        return 1;
+    // Write RAM data to NV
+    fseek(s_NvFile, 0, SEEK_SET);
+    OK = (NV_MEMORY_SIZE == fwrite(s_NV, 1, NV_MEMORY_SIZE, s_NvFile));
+    OK = OK && (0 == fflush(s_NvFile));
+    assert(OK);
+    return OK;
+}
+
+//*** NvFileSize()
+// This function gets the size of the NV file and puts the file pointer were desired
+// using the seek method values. SEEK_SET => beginning; SEEK_CUr => current position 
+// and SEEK_END => to the end of the file.
+static long
+NvFileSize(
+    int         leaveAt
+)
+{
+    long    fileSize;
+    long    filePos = ftell(s_NvFile);
+//
+    assert(NULL != s_NvFile);
+
+    fseek(s_NvFile, 0, SEEK_END);
+    fileSize = ftell(s_NvFile);
+    switch(leaveAt)
+    {
+        case SEEK_SET:
+            filePos = 0;
+        case SEEK_CUR:
+            fseek(s_NvFile, filePos, SEEK_SET);
+            break;
+        case SEEK_END:
+            break;
+        default:
+            assert(FALSE);
+            break;
+    }
+    return fileSize;
+}
+#endif
 
 //*** _plat__NvErrors()
 // This function is used by the simulator to set the error flags in the NV
@@ -54,7 +134,7 @@
 LIB_EXPORT void
 _plat__NvErrors(
     int              recoverable,
-    int            unrecoverable
+    int              unrecoverable
     )
 {
     s_NV_unrecoverable = unrecoverable;
@@ -72,7 +152,7 @@ _plat__NvErrors(
 // The recovery from an integrity failure depends on where the error occurred. It
 // it was in the state that is discarded by TPM Reset, then the error is
 // recoverable if the TPM is reset. Otherwise, the TPM must go into failure mode.
-// return type: int
+//  Return Type: int
 //      0           if success
 //      > 0         if receive recoverable error
 //      <0          if unrecoverable error
@@ -82,67 +162,34 @@ _plat__NVEnable(
     )
 {
     NOT_REFERENCED(platParameter);          // to keep compiler quiet
+//
     // Start assuming everything is OK
     s_NV_unrecoverable = FALSE;
     s_NV_recoverable = FALSE;
-
-#ifdef FILE_BACKED_NV
-
-    if(s_NVFile != NULL) 
+#if FILE_BACKED_NV
+    if(s_NvFile != NULL) 
         return 0;
+    // Initialize all the bytes in the ram copy of the NV
+    _plat__NvMemoryClear(0, NV_MEMORY_SIZE);
 
-    // Try to open an exist NVChip file for read/write
-#if defined _MSC_VER && 1
-    if(0 != fopen_s(&s_NVFile, "NVChip", "r+b"))
-        s_NVFile = NULL;
-#else
-    s_NVFile = fopen("NVChip", "r+b");
-#endif
-
-    
-
-    if(NULL != s_NVFile)
+    // If the file exists
+    if(NvFileOpen("r+b") >= 0)
     {
-        // See if the NVChip file is empty
-        fseek(s_NVFile, 0, SEEK_END);
-        if(0 == ftell(s_NVFile))
-        {
-            fclose(s_NVFile);
-            s_NVFile = NULL;
-        }
+        long    fileSize = NvFileSize(SEEK_SET);    // get the file size and leave the
+                                                    // file pointer at the start
+//
+        // If the size is right, read the data
+        if(NV_MEMORY_SIZE == fileSize)
+            fread(s_NV, 1, NV_MEMORY_SIZE, s_NvFile);
+        else 
+            NvFileCommit();     // for any other size, initialize it
     }
-
-    if(s_NVFile == NULL)
-    {
-        // Initialize all the byte in the new file to 0
-        memset(s_NV, 0, NV_MEMORY_SIZE);
-
-        // If NVChip file does not exist, try to create it for read/write
-#if defined _MSC_VER && 1
-        if(0 != fopen_s(&s_NVFile, "NVChip", "w+b"))
-            s_NVFile = NULL;
-#else
-        s_NVFile = fopen("NVChip", "w+b");
+    // If NVChip file does not exist, try to create it for read/write. 
+    else if(NvFileOpen("w+b") >= 0)
+        NvFileCommit();             // Initialize the file
+    assert(NULL != s_NvFile);       // Just in case we are broken for some reason.
 #endif
-        if(s_NVFile != NULL)
-        {
-        // Start initialize at the end of new file
-            fseek(s_NVFile, 0, SEEK_END);
-            // Write 0s to NVChip file
-            fwrite(s_NV, 1, NV_MEMORY_SIZE, s_NVFile);
-        }
-    }
-    else
-    {
-        // If NVChip file exist, assume the size is correct
-        fseek(s_NVFile, 0, SEEK_END);
-        assert(ftell(s_NVFile) == NV_MEMORY_SIZE);
-        // read NV file data to memory
-        fseek(s_NVFile, 0, SEEK_SET);
-        fread(s_NV, NV_MEMORY_SIZE, 1, s_NVFile);
-    }
-#endif
-    // NV contents have been read and the error checks have been performed. For
+    // NV contents have been initialized and the error checks have been performed. For
     // simulation purposes, use the signaling interface to indicate if an error is
     // to be simulated and the type of the error.
     if(s_NV_unrecoverable)
@@ -157,22 +204,17 @@ _plat__NVDisable(
     void
     )
 {
-#ifdef  FILE_BACKED_NV
-
-    assert(s_NVFile != NULL);
-    // Close NV file
-    fclose(s_NVFile);
-    // Set file handle to NULL
-    s_NVFile = NULL;
-
+#if  FILE_BACKED_NV
+    if(NULL != s_NvFile)
+        fclose(s_NvFile);    // Close NV file
+    s_NvFile = NULL;        // Set file handle to NULL
 #endif
-
     return;
 }
 
 //***_plat__IsNvAvailable()
 // Check if NV is available
-// return type: int
+//  Return Type: int
 //      0               NV is available
 //      1               NV is not available due to write failure
 //      2               NV is not available due to rate limit
@@ -181,16 +223,15 @@ _plat__IsNvAvailable(
     void
     )
 {
+    int         retVal = 0;
     // NV is not available if the TPM is in failure mode
     if(!s_NvIsAvailable)
-        return 1;
-
-#ifdef FILE_BACKED_NV
-    if(s_NVFile == NULL)
-        return 1;
+        retVal = 1;
+#if FILE_BACKED_NV
+    else
+        retVal = (s_NvFile == NULL);
 #endif
-
-    return 0;
+    return retVal;
 }
 
 //***_plat__NvMemoryRead()
@@ -203,18 +244,16 @@ _plat__NvMemoryRead(
     )
 {
     assert(startOffset + size <= NV_MEMORY_SIZE);
-
-    // Copy data from RAM
-    memcpy(data, &s_NV[startOffset], size);
+    memcpy(data, &s_NV[startOffset], size);     // Copy data from RAM
     return;
 }
 
 //*** _plat__NvIsDifferent()
 // This function checks to see if the NV is different from the test value. This is
 // so that NV will not be written if it has not changed.
-// return value: int
-//  TRUE(1)    the NV location is different from the test value
-//  FALSE(0)   the NV location is the same as the test value
+//  Return Type: int
+//      TRUE(1)         the NV location is different from the test value
+//      FALSE(0)        the NV location is the same as the test value
 LIB_EXPORT int
 _plat__NvIsDifferent(
     unsigned int     startOffset,   // IN: read start
@@ -240,9 +279,7 @@ _plat__NvMemoryWrite(
     )
 {
     assert(startOffset + size <= NV_MEMORY_SIZE);
-
-    // Copy the data to the NV image
-    memcpy(&s_NV[startOffset], data, size);
+    memcpy(&s_NV[startOffset], data, size);     // Copy the data to the NV image
 }
 
 //***_plat__NvMemoryClear()
@@ -255,8 +292,7 @@ _plat__NvMemoryClear(
     )
 {
     assert(start + size <= NV_MEMORY_SIZE);
-
-    // In this implementation, assume that the errase value for NV is all 1s
+    // In this implementation, assume that the erase value for NV is all 1s
     memset(&s_NV[start], 0xff, size);
 }
 
@@ -273,16 +309,14 @@ _plat__NvMemoryMove(
 {
     assert(sourceOffset + size <= NV_MEMORY_SIZE);
     assert(destOffset + size <= NV_MEMORY_SIZE);
-
-    // Move data in RAM
-    memmove(&s_NV[destOffset], &s_NV[sourceOffset], size);
-
+    memmove(&s_NV[destOffset], &s_NV[sourceOffset], size);      // Move data in RAM
     return;
 }
 
 //***_plat__NvCommit()
-// Update NV chip
-// return type: int
+// This function writes the local copy of NV to NV for permanent store. It will write
+// NV_MEMORY_SIZE bytes to NV. If a file is use, the entire file is written.
+//  Return Type: int
 //  0       NV write success
 //  non-0   NV write fail
 LIB_EXPORT int
@@ -290,15 +324,8 @@ _plat__NvCommit(
     void
     )
 {
-#ifdef FILE_BACKED_NV
-    // If NV file is not available, return failure
-    if(s_NVFile == NULL)
-        return 1;
-
-    // Write RAM data to NV
-    fseek(s_NVFile, 0, SEEK_SET);
-    fwrite(s_NV, 1, NV_MEMORY_SIZE, s_NVFile);
-    return 0;
+#if FILE_BACKED_NV
+    return (NvFileCommit() ? 0 : 1);
 #else
     return 0;
 #endif

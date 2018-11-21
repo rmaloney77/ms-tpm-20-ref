@@ -32,10 +32,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-//**Introduction
-/*
-    This module simulates the cancel pins on the TPM.
-*/
+//** Description
+//
+//  This module simulates the cancel pins on the TPM.
+//
 //** Includes, Typedefs, Structures, and Defines
 #include "PlatformData.h"
 #include "Platform_fp.h"
@@ -44,9 +44,9 @@
 
 //***_plat__IsCanceled()
 // Check if the cancel flag is set
-// return type: BOOL
-//      TRUE(1)      if cancel flag is set
-//      FALSE(0)     if cancel flag is not set
+//  Return Type: int
+//      TRUE(1)         if cancel flag is set
+//      FALSE(0)        if cancel flag is not set
 LIB_EXPORT int
 _plat__IsCanceled(
     void

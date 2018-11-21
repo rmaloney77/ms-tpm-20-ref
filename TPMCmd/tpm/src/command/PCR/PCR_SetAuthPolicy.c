@@ -35,12 +35,12 @@
 #include "Tpm.h"
 #include "PCR_SetAuthPolicy_fp.h"
 
-#ifdef TPM_CC_PCR_SetAuthPolicy  // Conditional expansion of this file
+#if CC_PCR_SetAuthPolicy  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // Set authPolicy to a group of PCR
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_SIZE                 size of 'authPolicy' is not the size of a digest
 //                                  produced by 'policyDigest'
 //      TPM_RC_VALUE                PCR referenced by 'pcrNum' is not a member

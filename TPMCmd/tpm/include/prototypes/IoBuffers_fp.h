@@ -34,7 +34,7 @@
  */
 /*(Auto-generated)
  *  Created by TpmPrototypes; Version 3.0 July 18, 2017
- *  Date: Aug 12, 2017  Time: 03:40:11PM
+ *  Date: Sep 30, 2018  Time: 10:15:36PM
  */
 
 #ifndef    _IOBUFFERS_FP_H_
@@ -76,22 +76,12 @@ MemoryGetOutBuffer(
 //*** IsLabelProperlyFormatted()
 // This function checks that a label is a null-terminated string.
 // NOTE: this function is here because there was no better place for it.
-// return type: BOOL
-//  FALSE   string is not null terminated
-//  TRUE    string is null terminated
-#ifndef INLINE_FUNCTIONS
+//  Return Type: BOOL
+//      TRUE(1)         string is null terminated
+//      FALSE(0)        string is not null terminated
 BOOL
 IsLabelProperlyFormatted(
     TPM2B           *x
     );
-#else
-INLINE BOOL
-IsLabelProperlyFormatted(
-    TPM2B           *x
-    )
-{
-    return (((x)->size == 0) || ((x)->buffer[(x)->size - 1] == 0));
-}
-#endif // INLINE_FUNCTIONS
 
 #endif  // _IOBUFFERS_FP_H_

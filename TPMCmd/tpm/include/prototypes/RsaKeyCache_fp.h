@@ -34,13 +34,13 @@
  */
 /*(Auto-generated)
  *  Created by TpmPrototypes; Version 3.0 July 18, 2017
- *  Date: Aug 12, 2017  Time: 03:40:11PM
+ *  Date: Oct 22, 2018  Time: 11:31:57PM
  */
 
 #ifndef    _RSAKEYCACHE_FP_H_
 #define    _RSAKEYCACHE_FP_H_
 
-#if defined SIMULATION && defined USE_RSA_KEY_CACHE
+#if USE_RSA_KEY_CACHE
 
 //*** RsaKeyCacheControl()
 // Used to enable and disable the RSA key cache.
@@ -49,6 +49,10 @@ RsaKeyCacheControl(
     int             state
     );
 
+//*** GetCachedRsaKey()
+//  Return Type: BOOL
+//      TRUE(1)         key loaded
+//      FALSE(0)        key not loaded
 BOOL
 GetCachedRsaKey(
     OBJECT              *key,

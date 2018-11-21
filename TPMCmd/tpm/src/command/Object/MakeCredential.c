@@ -35,14 +35,14 @@
 #include "Tpm.h"
 #include "MakeCredential_fp.h"
 
-#ifdef TPM_CC_MakeCredential  // Conditional expansion of this file
+#if CC_MakeCredential  // Conditional expansion of this file
 
 #include "Object_spt_fp.h"
 
 /*(See part 3 specification)
 // Make Credential with an object
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_KEY              'handle' referenced an ECC key that has a unique
 //                              field that is not a point on the curve of the key
 //      TPM_RC_SIZE             'credential' is larger than the digest size of

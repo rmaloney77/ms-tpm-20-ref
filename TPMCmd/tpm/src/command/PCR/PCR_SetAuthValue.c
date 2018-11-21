@@ -35,12 +35,12 @@
 #include "Tpm.h"
 #include "PCR_SetAuthValue_fp.h"
 
-#ifdef TPM_CC_PCR_SetAuthValue  // Conditional expansion of this file
+#if CC_PCR_SetAuthValue  // Conditional expansion of this file
 
 /*(See part 3 specification)
 // Set authValue to a group of PCR
 */
-// return type: TPM_RC
+//  Return Type: TPM_RC
 //      TPM_RC_VALUE                PCR referenced by 'pcrHandle' is not a member
 //                                  of a PCR authorization group
 TPM_RC
